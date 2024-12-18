@@ -1,4 +1,4 @@
-# *Flip Clock*
+# *Flip Clock Board*
 
 FlipClock will default to Theme colors but can be further customized through constructor parameters.
 
