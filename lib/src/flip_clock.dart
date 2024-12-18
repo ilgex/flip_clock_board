@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../flip_widget.dart';
 import 'flip_clock_builder.dart';
+import 'flip_widget.dart';
 
 /// FlipClock display with current time.
 ///
@@ -31,7 +31,7 @@ class FlipClock extends StatelessWidget {
   /// - hingeColor defaults to null (transparent)
   /// - digitSpacing defaults to horizontal: 2.0
   FlipClock({
-    Key? key,
+    super.key,
     required double digitSize,
     required double width,
     required double height,
@@ -51,21 +51,27 @@ class FlipClock extends StatelessWidget {
     double? hingeLength,
     Color? hingeColor,
     EdgeInsets digitSpacing = const EdgeInsets.symmetric(horizontal: 2.0),
-  })  : assert(hingeLength == null || hingeWidth == 0.0 && hingeLength == 0.0 || hingeWidth > 0.0 && hingeLength > 0.0),
-        assert((borderWidth == null && borderColor == null) || (showBorder == null || showBorder == true)),
+  })  : assert(hingeLength == null ||
+            hingeWidth == 0.0 && hingeLength == 0.0 ||
+            hingeWidth > 0.0 && hingeLength > 0.0),
+        assert((borderWidth == null && borderColor == null) ||
+            (showBorder == null || showBorder == true)),
         _displayBuilder = FlipClockBuilder(
           digitSize: digitSize,
           width: width,
           height: height,
           flipDirection: flipDirection,
-          flipCurve:
-              flipCurve ?? (flipDirection == AxisDirection.down ? FlipWidget.bounceFastFlip : FlipWidget.defaultFlip),
+          flipCurve: flipCurve ??
+              (flipDirection == AxisDirection.down
+                  ? FlipWidget.bounceFastFlip
+                  : FlipWidget.defaultFlip),
           digitColor: digitColor,
           backgroundColor: backgroundColor,
           separatorWidth: separatorWidth ?? width / 3.0,
           separatorColor: separatorColor,
           separatorBackgroundColor: separatorBackgroundColor,
-          showBorder: showBorder ?? (borderColor != null || borderWidth != null),
+          showBorder:
+              showBorder ?? (borderColor != null || borderWidth != null),
           borderWidth: borderWidth,
           borderColor: borderColor,
           borderRadius: borderRadius,
@@ -73,11 +79,13 @@ class FlipClock extends StatelessWidget {
           hingeLength: hingeWidth == 0.0
               ? 0.0
               : hingeLength ??
-                  (flipDirection == AxisDirection.down || flipDirection == AxisDirection.up ? width : height),
+                  (flipDirection == AxisDirection.down ||
+                          flipDirection == AxisDirection.up
+                      ? width
+                      : height),
           hingeColor: hingeColor,
           digitSpacing: digitSpacing,
-        ),
-        super(key: key);
+        );
 
   /// Builder with common code for all FlipClock types.
   ///
@@ -110,11 +118,14 @@ class FlipClock extends StatelessWidget {
   }
 
   Widget _buildHourDisplay(Stream<DateTime> timeStream, DateTime initValue) =>
-      _displayBuilder.buildTimePartDisplay(timeStream.map((time) => time.hour), initValue.hour);
+      _displayBuilder.buildTimePartDisplay(
+          timeStream.map((time) => time.hour), initValue.hour);
 
   Widget _buildMinuteDisplay(Stream<DateTime> timeStream, DateTime initValue) =>
-      _displayBuilder.buildTimePartDisplay(timeStream.map((time) => time.minute), initValue.minute);
+      _displayBuilder.buildTimePartDisplay(
+          timeStream.map((time) => time.minute), initValue.minute);
 
   Widget _buildSecondDisplay(Stream<DateTime> timeStream, DateTime initValue) =>
-      _displayBuilder.buildTimePartDisplay(timeStream.map((time) => time.second), initValue.second);
+      _displayBuilder.buildTimePartDisplay(
+          timeStream.map((time) => time.second), initValue.second);
 }

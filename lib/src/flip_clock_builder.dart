@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../widget/flip_widget.dart';
+import 'flip_widget.dart';
 
 /// Helper class with builder methods to compose a flip clock display.
 ///

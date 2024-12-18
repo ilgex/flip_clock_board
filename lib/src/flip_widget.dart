@@ -41,7 +41,7 @@ class FlipWidget<T> extends StatefulWidget {
   ///   VoidCallback onDone,       // Optional callback for onDone stream event
   ///   int startCount,            // Widget state count that allows the widget state to restart stream listening on widget update.
   const FlipWidget({
-    Key? key,
+    super.key,
     required this.flipType,
     required this.itemStream,
     required this.itemBuilder,
@@ -57,8 +57,7 @@ class FlipWidget<T> extends StatefulWidget {
     this.startCount = 0,
   })  : assert(hingeWidth == 0.0 && hingeLength == 0.0 ||
             hingeWidth != 0.0 && hingeLength != 0.0),
-        assert(hingeColor == null || hingeWidth != 0.0),
-        super(key: key);
+        assert(hingeColor == null || hingeWidth != 0.0);
 
   /// Custom animation Curve for a fast bounce effect (bang! effect).
   static const bounceFastFlip = _BounceFastFlipCurve();
