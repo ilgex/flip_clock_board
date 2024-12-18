@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import 'flip_clock_builder.dart';
@@ -11,7 +12,7 @@ import 'flip_widget.dart';
 /// this digits are refreshed by a stream of [DateTime].now() instances.
 /// Since FlipWidget animates only changes, just digits that actually
 /// change between seconds are flipped.
-class FlipClock extends StatelessWidget {
+class FlipClock extends StatefulWidget {
   /// FlipClock constructor.
   ///
   /// Parameters define clock digits and flip panel appearance.
@@ -50,6 +51,7 @@ class FlipClock extends StatelessWidget {
     double hingeWidth = 0.8,
     double? hingeLength,
     Color? hingeColor,
+    this.flipSound = false,
     EdgeInsets digitSpacing = const EdgeInsets.symmetric(horizontal: 2.0),
   })  : assert(hingeLength == null ||
             hingeWidth == 0.0 && hingeLength == 0.0 ||
@@ -94,12 +96,27 @@ class FlipClock extends StatelessWidget {
 
   final bool showSeconds;
 
+  final bool flipSound;
+
+  @override
+  State<FlipClock> createState() => _FlipClockState();
+}
+
+class _FlipClockState extends State<FlipClock> {
+  final player = AudioPlayer();
+
   @override
   Widget build(BuildContext context) {
     final initValue = DateTime.now();
     final timeStream = Stream<DateTime>.periodic(
       const Duration(seconds: 1),
-      (_) => DateTime.now(),
+      (_) {
+        final now = DateTime.now();
+        if (now.second == 0) {
+          _playFlipSound();
+        }
+        return now;
+      },
     ).asBroadcastStream();
 
     return Row(
@@ -107,25 +124,32 @@ class FlipClock extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         _buildHourDisplay(timeStream, initValue),
-        _displayBuilder.buildSeparator(context),
+        widget._displayBuilder.buildSeparator(context),
         _buildMinuteDisplay(timeStream, initValue),
-        if (showSeconds) ...[
-          _displayBuilder.buildSeparator(context),
+        if (widget.showSeconds) ...[
+          widget._displayBuilder.buildSeparator(context),
           _buildSecondDisplay(timeStream, initValue),
         ],
       ],
     );
   }
 
+  void _playFlipSound() async {
+    await Future.delayed(Duration(milliseconds: 500));
+    if (widget.flipSound) {
+      await player.play(AssetSource('flip.mp3'));
+    }
+  }
+
   Widget _buildHourDisplay(Stream<DateTime> timeStream, DateTime initValue) =>
-      _displayBuilder.buildTimePartDisplay(
+      widget._displayBuilder.buildTimePartDisplay(
           timeStream.map((time) => time.hour), initValue.hour);
 
   Widget _buildMinuteDisplay(Stream<DateTime> timeStream, DateTime initValue) =>
-      _displayBuilder.buildTimePartDisplay(
+      widget._displayBuilder.buildTimePartDisplay(
           timeStream.map((time) => time.minute), initValue.minute);
 
   Widget _buildSecondDisplay(Stream<DateTime> timeStream, DateTime initValue) =>
-      _displayBuilder.buildTimePartDisplay(
+      widget._displayBuilder.buildTimePartDisplay(
           timeStream.map((time) => time.second), initValue.second);
 }
