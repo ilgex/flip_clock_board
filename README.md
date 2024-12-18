@@ -1,6 +1,6 @@
 # *Flip Clock Board*
 
-FlipClock will default to Theme colors but can be further customized through constructor parameters.
+FlipClockBoard will default to Theme colors but can be further customized through constructor parameters.
 
 The default flip direction is AxisDirection.down and the default animation curve is a custom curve that acceletares like gravity and bounces back at the end (like a mechanical bang).
 
